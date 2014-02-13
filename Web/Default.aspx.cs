@@ -8,17 +8,61 @@ using System.Web.UI.WebControls;
 public partial class _Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
-    {        
-        highcharts1.Type = HighchartsNET.ChartType.Line;
-        highcharts1.SubTitle = "二级菜单";
-        highcharts1.Tooltip = "valueSuffix: '°C'";
+    {
         Dictionary<string, double> dic = new Dictionary<string, double>();
         Random r = new Random();
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 12; i++)
         {
             dic.Add(DateTime.Now.AddDays(i).ToShortDateString(), r.Next(20));
         }
-        highcharts1.YAxis = "摄氏度℃";
-        highcharts1.Series = new HighchartsNET.ChartsSeries { SeriesName="温度",SeriesData=dic};
+
+        Dictionary<string, double> dic1 = new Dictionary<string, double>();
+        Random r1 = new Random();
+        for (int i = 0; i < 12; i++)
+        {
+            dic1.Add(DateTime.Now.AddDays(i).ToShortDateString(), r.Next(20,100));
+        }
+
+        highcharts1.DivId = "chart1";
+        highcharts1.Type = HighchartsNET.ChartType.Line;
+        highcharts1.SubTitle = "二级标题";
+        highcharts1.Tooltip = "valueSuffix: '°C'";
+        highcharts1.YAxis = "摄氏度℃";//Y轴的值;
+        highcharts1.Series = new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic };
+
+        highcharts2.DivId = "chart2";
+        highcharts2.Type = HighchartsNET.ChartType.Column;
+        highcharts2.Tooltip = "pointFormat: '<span style=\"color:{series.color};padding:0\">{series.name}: <b>{point.y:.1f} ℃</b></span>'";
+        highcharts2.YAxis = "摄氏度℃";//Y轴的值;
+        highcharts2.Series = new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic };
+
+        highcharts3.DivId = "chart3";
+        highcharts3.Type = HighchartsNET.ChartType.Pie;
+        highcharts3.PlotOptions = @"pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }";
+        highcharts3.Tooltip = "pointFormat: '{series.name}: <b>{point.percentage:.1f} %</b>'";
+        highcharts3.Series = new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic };
+
+        highcharts4.DivId = "chart4";
+        highcharts4.Type = HighchartsNET.ChartType.Line;
+        highcharts4.SeriesList = new List<HighchartsNET.ChartsSeries> { 
+            new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic },
+            new HighchartsNET.ChartsSeries { SeriesName = "湿度", SeriesData = dic1 }
+        };
+
+        highcharts5.DivId = "chart5";
+        highcharts5.Type = HighchartsNET.ChartType.Column;
+        highcharts5.SeriesList = new List<HighchartsNET.ChartsSeries> { 
+            new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic },
+            new HighchartsNET.ChartsSeries { SeriesName = "湿度", SeriesData = dic1 }
+        };
     }
 }
