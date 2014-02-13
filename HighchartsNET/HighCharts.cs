@@ -17,7 +17,7 @@ namespace HighchartsNET
         /// <summary>
         /// 图表标题
         /// </summary>
-        [Description("图表标题")]        
+        [Description("图表标题")]
         public string Title { get; set; }
         /// <summary>
         /// 图表类型
@@ -64,13 +64,14 @@ namespace HighchartsNET
         {
             //base.Render(writer);
             StringBuilder sb = new StringBuilder();
-            if (string.IsNullOrEmpty(DivId)) 
-            { 
+            if (string.IsNullOrEmpty(DivId))
+            {
                 DivId = "zerochart";
                 sb.Append("<div id=\"zerochart\" style=\"margin: 0px auto\"></div>");
             }
             //StringBuilder sb = new StringBuilder("<script type=\"text/javascript\">$(function(){$(\"#"+DivId+"\").highcharts({ ");
             sb.Append("<script type=\"text/javascript\">$(function(){$(\"#" + DivId + "\").highcharts({ ");
+            sb.Append("credits: { enabled: false },");
             sb.Append("chart:{ type: '" + Type.ToString().ToLower() + "'},");
             if (!string.IsNullOrEmpty(Title))
                 sb.Append("title: { text: '" + Title + "'},");
@@ -78,16 +79,20 @@ namespace HighchartsNET
                 sb.Append("subtitle: { text: '" + SubTitle + "'},");
             if (XAxis != null && Type != ChartType.Pie)
             {
-                XAxisToString(sb,XAxis);
+                XAxisToString(sb, XAxis);
             }
-            else if(Type!=ChartType.Pie)
+            else if (Series.SeriesData != null && Type != ChartType.Pie)
             {
                 XAxisToString(sb, Series.SeriesData.Keys.ToList());
+            }
+            else if(SeriesList!=null&&SeriesList.Count>0)
+            {
+                XAxisToString(sb, SeriesList[0].SeriesData.Keys.ToList());
             }
             if (!string.IsNullOrEmpty(YAxis))
             {
                 if (YAxis.IndexOf("title") < 0)
-                    sb.Append("yAxis: { title:{ text:'" + YAxis + "'}},");                    
+                    sb.Append("yAxis: { title:{ text:'" + YAxis + "'}},");
                 else
                     sb.Append("yAxis: {" + YAxis + "},");
             }
@@ -96,8 +101,8 @@ namespace HighchartsNET
             if (!string.IsNullOrEmpty(PlotOptions))
                 sb.Append("plotOptions:{" + PlotOptions + "},");
             //数据处理方法
-            
-            SeriesToString(sb);           
+
+            SeriesToString(sb);
 
             sb.Append(" }); }); </script>");
             //sb.Append("<div id=\"zerochart\" style=\"margin: 0px auto\"></div>");
@@ -112,7 +117,7 @@ namespace HighchartsNET
             {
                 seriesdata = SeriesDataToString(Series);
             }
-            if (SeriesList != null && SeriesList.Count != 0) 
+            if (SeriesList != null && SeriesList.Count != 0)
             {
                 foreach (ChartsSeries ser in SeriesList)
                 {
@@ -142,7 +147,7 @@ namespace HighchartsNET
             return seriesdata;
         }
 
-        private void XAxisToString(StringBuilder sb,List<string> xAxis)
+        private void XAxisToString(StringBuilder sb, List<string> xAxis)
         {
             sb.Append("xAxis: { categories: [");
             int i = 0;
