@@ -11,15 +11,17 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div id="chart1"></div>
+
     <Zero:HighCharts runat="server" ID="highcharts1" Title="折线图" />
-    <div id="chart4"></div>
+    
     <Zero:HighCharts runat="server" ID="highcharts4" Title="多条折线图" />
-    <div id="chart2"></div>
+    
     <Zero:HighCharts runat="server" ID="highcharts2" Title="柱形图" />
-    <div id="chart5"></div>
+    
     <Zero:HighCharts runat="server" ID="highcharts5" Title="多条柱形图" />
-    <div id="chart3"></div>
+    
+    <Zero:HighCharts runat="server" ID="highcharts6" Title="柱形图" />
+    
     <Zero:HighCharts runat="server" ID="highcharts3" Title="饼图" />
     </form>
 </body>

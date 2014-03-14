@@ -64,5 +64,11 @@ public partial class _Default : System.Web.UI.Page
             new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic },
             new HighchartsNET.ChartsSeries { SeriesName = "湿度", SeriesData = dic1 }
         };
+
+        highcharts6.DivId = "chart6";
+        highcharts6.Type = HighchartsNET.ChartType.Bar;
+        highcharts6.Tooltip = "pointFormat: '<span style=\"color:{series.color};padding:0\">{series.name}: <b>{point.y:.1f} ℃</b></span>'";
+        highcharts6.YAxis = "摄氏度℃";//Y轴的值;
+        highcharts6.Series = new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic };
     }
 }

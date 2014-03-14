@@ -12,6 +12,7 @@ namespace HighchartsNET
     /// <summary>
     /// 图表自定义控件，详细功能参看api文档 http://www.highcharts.me/api/index.html
     /// </summary>
+    [ToolboxData("<{0}:HighCharts runat=server></{0}:HighCharts>")]
     public class HighCharts : WebControl
     {
         /// <summary>
@@ -60,53 +61,70 @@ namespace HighchartsNET
         /// </summary>
         public List<ChartsSeries> SeriesList { get; set; }
 
-        protected override void Render(HtmlTextWriter writer)
+        public override void RenderBeginTag(HtmlTextWriter writer)
         {
-            //base.Render(writer);
-            StringBuilder sb = new StringBuilder();
+            //writer.WriteLine();
+            writer.Write("<!--此代码由HighchartsNET自动生成-->");
+            writer.WriteLine();
+        }
+
+        protected override void RenderContents(HtmlTextWriter writer)
+        {
+            StringBuilder innerhtml = new StringBuilder();
             if (string.IsNullOrEmpty(DivId))
-            {
                 DivId = "zerochart";
-                sb.Append("<div id=\"zerochart\" style=\"margin: 0px auto\"></div>");
-            }
-            //StringBuilder sb = new StringBuilder("<script type=\"text/javascript\">$(function(){$(\"#"+DivId+"\").highcharts({ ");
-            sb.Append("<script type=\"text/javascript\">$(function(){$(\"#" + DivId + "\").highcharts({ ");
-            sb.Append("credits: { enabled: false },");
-            sb.Append("chart:{ type: '" + Type.ToString().ToLower() + "'},");
+            writer.AddAttribute(HtmlTextWriterAttribute.Id, DivId);
+            writer.AddAttribute(HtmlTextWriterAttribute.Style, Style.Value);
+            writer.AddStyleAttribute(HtmlTextWriterStyle.Margin, "0px auto");
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            writer.RenderEndTag();
+            writer.AddAttribute(HtmlTextWriterAttribute.Type, "text/javascript");
+            writer.RenderBeginTag(HtmlTextWriterTag.Script);
+            HighChartsJs(innerhtml);
+            writer.Write(innerhtml.ToString());
+            writer.RenderEndTag();
+        }
+
+        private void HighChartsJs(StringBuilder jscode)
+        {
+            jscode.Append("$(function(){$('#" + DivId + "').highcharts({ ");
+            jscode.Append("credits: { enabled: false },");
+            jscode.Append("chart:{ type: '" + Type.ToString().ToLower() + "'},");
             if (!string.IsNullOrEmpty(Title))
-                sb.Append("title: { text: '" + Title + "'},");
+                jscode.Append("title: { text: '" + Title + "'},");
             if (!string.IsNullOrEmpty(SubTitle))
-                sb.Append("subtitle: { text: '" + SubTitle + "'},");
+                jscode.Append("subtitle: { text: '" + SubTitle + "'},");
             if (XAxis != null && Type != ChartType.Pie)
             {
-                XAxisToString(sb, XAxis);
+                XAxisToString(jscode, XAxis);
             }
             else if (Series.SeriesData != null && Type != ChartType.Pie)
             {
-                XAxisToString(sb, Series.SeriesData.Keys.ToList());
+                XAxisToString(jscode, Series.SeriesData.Keys.ToList());
             }
-            else if(SeriesList!=null&&SeriesList.Count>0)
+            else if (SeriesList != null && SeriesList.Count > 0)
             {
-                XAxisToString(sb, SeriesList[0].SeriesData.Keys.ToList());
+                XAxisToString(jscode, SeriesList[0].SeriesData.Keys.ToList());
             }
             if (!string.IsNullOrEmpty(YAxis))
             {
                 if (YAxis.IndexOf("title") < 0)
-                    sb.Append("yAxis: { title:{ text:'" + YAxis + "'}},");
+                    jscode.Append("yAxis: { title:{ text:'" + YAxis + "'}},");
                 else
-                    sb.Append("yAxis: {" + YAxis + "},");
+                    jscode.Append("yAxis: {" + YAxis + "},");
             }
             if (!string.IsNullOrEmpty(Tooltip))
-                sb.Append("tooltip: {" + Tooltip + "},");
+                jscode.Append("tooltip: {" + Tooltip + "},");
             if (!string.IsNullOrEmpty(PlotOptions))
-                sb.Append("plotOptions:{" + PlotOptions + "},");
+                jscode.Append("plotOptions:{" + PlotOptions + "},");
             //数据处理方法
+            SeriesToString(jscode);
+            jscode.Append(" }); });");
+        }
 
-            SeriesToString(sb);
-
-            sb.Append(" }); }); </script>");
-            //sb.Append("<div id=\"zerochart\" style=\"margin: 0px auto\"></div>");
-            writer.Write(sb.ToString());
+        public override void RenderEndTag(HtmlTextWriter writer)
+        {
+            writer.WriteLine();
         }
 
         private void SeriesToString(StringBuilder sb)
@@ -172,6 +190,7 @@ namespace HighchartsNET
     {
         Column,
         Pie,
-        Line
+        Line,
+        Bar
     }
 }
