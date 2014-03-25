@@ -14,7 +14,7 @@
 
     <Zero:HighCharts runat="server" ID="highcharts1" Title="折线图" />
     
-    <Zero:HighCharts runat="server" ID="highcharts4" Title="多条折线图" />
+    <Zero:HighCharts runat="server" ID="mychart" Title="多条折线图" />
     
     <Zero:HighCharts runat="server" ID="highcharts2" Title="柱形图" />
     

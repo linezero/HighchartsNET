@@ -57,7 +57,7 @@ namespace HighchartsNET
         public string DivId { get; set; }
 
         /// <summary>
-        /// 高级功能，多个数据集，多条图表饼图不需要。
+        /// 高级功能，多个数据集，多条图表，饼图不需要。
         /// </summary>
         public List<ChartsSeries> SeriesList { get; set; }
 
@@ -72,7 +72,7 @@ namespace HighchartsNET
         {
             StringBuilder innerhtml = new StringBuilder();
             if (string.IsNullOrEmpty(DivId))
-                DivId = "zerochart";
+                DivId = this.ID; //DivId = "zerochart";
             writer.AddAttribute(HtmlTextWriterAttribute.Id, DivId);
             writer.AddAttribute(HtmlTextWriterAttribute.Style, Style.Value);
             writer.AddStyleAttribute(HtmlTextWriterStyle.Margin, "0px auto");
@@ -125,6 +125,7 @@ namespace HighchartsNET
         public override void RenderEndTag(HtmlTextWriter writer)
         {
             writer.WriteLine();
+            writer.WriteLine("<!--end by zero-->");
         }
 
         private void SeriesToString(StringBuilder sb)

@@ -23,14 +23,12 @@ public partial class _Default : System.Web.UI.Page
             dic1.Add(DateTime.Now.AddDays(i).ToShortDateString(), r.Next(20,100));
         }
 
-        highcharts1.DivId = "chart1";
         highcharts1.Type = HighchartsNET.ChartType.Line;
         highcharts1.SubTitle = "二级标题";
         highcharts1.Tooltip = "valueSuffix: '°C'";
         highcharts1.YAxis = "摄氏度℃";//Y轴的值;
         highcharts1.Series = new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic };
 
-        highcharts2.DivId = "chart2";
         highcharts2.Type = HighchartsNET.ChartType.Column;
         highcharts2.Tooltip = "pointFormat: '<span style=\"color:{series.color};padding:0\">{series.name}: <b>{point.y:.1f} ℃</b></span>'";
         highcharts2.YAxis = "摄氏度℃";//Y轴的值;
@@ -51,9 +49,8 @@ public partial class _Default : System.Web.UI.Page
         highcharts3.Tooltip = "pointFormat: '{series.name}: <b>{point.percentage:.1f} %</b>'";
         highcharts3.Series = new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic };
 
-        highcharts4.DivId = "chart4";
-        highcharts4.Type = HighchartsNET.ChartType.Line;
-        highcharts4.SeriesList = new List<HighchartsNET.ChartsSeries> { 
+        mychart.Type = HighchartsNET.ChartType.Line;
+        mychart.SeriesList = new List<HighchartsNET.ChartsSeries> { 
             new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic },
             new HighchartsNET.ChartsSeries { SeriesName = "湿度", SeriesData = dic1 }
         };
