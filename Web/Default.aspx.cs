@@ -9,14 +9,14 @@ public partial class _Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Dictionary<string, double> dic = new Dictionary<string, double>();
+        Dictionary<object, object> dic = new Dictionary<object, object>();
         Random r = new Random();
         for (int i = 0; i < 12; i++)
         {
             dic.Add(DateTime.Now.AddDays(i).ToShortDateString(), r.Next(20));
         }
 
-        Dictionary<string, double> dic1 = new Dictionary<string, double>();
+        Dictionary<object, object> dic1 = new Dictionary<object, object>();
         Random r1 = new Random();
         for (int i = 0; i < 12; i++)
         {
@@ -36,16 +36,16 @@ public partial class _Default : System.Web.UI.Page
 
         highcharts3.DivId = "chart3";
         highcharts3.Type = HighchartsNET.ChartType.Pie;
-        highcharts3.PlotOptions = @"pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    color: '#000000',
-                    connectorColor: '#000000',
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                }
-            }";
+//        highcharts3.PlotOptions = @"pie: {
+//                allowPointSelect: true,
+//                cursor: 'pointer',
+//                dataLabels: {
+//                    enabled: true,
+//                    color: '#000000',
+//                    connectorColor: '#000000',
+//                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+//                }
+//            }";
         highcharts3.Tooltip = "pointFormat: '{series.name}: <b>{point.percentage:.1f} %</b>'";
         highcharts3.Series = new HighchartsNET.ChartsSeries { SeriesName = "温度", SeriesData = dic };
 

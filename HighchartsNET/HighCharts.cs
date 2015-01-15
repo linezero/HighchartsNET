@@ -6,11 +6,12 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.ComponentModel;
+using System.Data;
 
 namespace HighchartsNET
 {
     /// <summary>
-    /// 图表自定义控件，详细功能参看api文档 http://www.highcharts.me/api/index.html
+    /// 图表自定义控件
     /// </summary>
     [ToolboxData("<{0}:HighCharts runat=server></{0}:HighCharts>")]
     public class HighCharts : WebControl
@@ -41,7 +42,7 @@ namespace HighchartsNET
         /// <summary>
         /// X轴选项
         /// </summary>
-        public List<string> XAxis { get; set; }
+        public List<object> XAxis { get; set; }
         /// <summary>
         /// Y轴选项 默认可以只填名称
         /// </summary>
@@ -61,9 +62,92 @@ namespace HighchartsNET
         /// </summary>
         public List<ChartsSeries> SeriesList { get; set; }
 
+        private bool noscript = true;
+        /// <summary>
+        /// 是否自动引用脚本，默认为true 设为false即需要手动添加js引用
+        /// </summary>
+        public bool NoScript 
+        {
+            get { return noscript; }
+            set { noscript = value; }
+        }
+
+        public string DataKey { get; set; }
+        public string DataValue { get; set; }
+        public object DataSource { get; set; }
+        public object DataName { get; set; }
+
+        public override void DataBind()
+        {
+            if (string.IsNullOrEmpty(DataKey) || string.IsNullOrEmpty(DataValue))
+                return;
+            if (DataSource != null)
+            {
+                System.Type type = DataSource.GetType();
+                if (type.Name.Equals("DataTable"))
+                {
+                    DataTable dt = (DataTable)DataSource;
+                    if (dt.Rows.Count <= 0) return;
+                    if (dt.Columns.Contains(DataKey) && dt.Columns.Contains(DataValue)) 
+                    {
+                        var dic = new Dictionary<object, object>();
+                        foreach (DataRow r in dt.Rows)
+                        {
+                            dic.Add(r[DataKey], r[DataValue]);
+                        }
+                        Series = new ChartsSeries { SeriesName = DataName, SeriesData = dic };
+                    }
+                }
+
+                if (type.Name.Equals("DataSet"))
+                {                    
+                    DataSet ds = (DataSet)DataSource;
+                    if (ds.Tables.Count <= 0) return;
+                    var list=new List<ChartsSeries>();
+                    for (int i = 0; i < ds.Tables.Count; i++)
+                    {
+                        DataTable dt = ds.Tables[i];
+                        if (dt.Rows.Count <= 0) continue;
+                        if (dt.Columns.Contains(DataKey) && dt.Columns.Contains(DataValue))
+                        {
+                            var dic = new Dictionary<object, object>();
+                            foreach (DataRow r in dt.Rows)
+                            {
+                                dic.Add(r[DataKey], r[DataValue]);
+                            }
+                            ChartsSeries cs = new ChartsSeries { SeriesName = GetDataName(i), SeriesData = dic };
+                            list.Add(cs);
+                        }
+                    }
+                    SeriesList = list;
+                }
+            }
+        }
+
+        private string GetDataName(int i) 
+        {
+            if (DataName == null) return "请填写数据名称";
+            System.Type t = DataName.GetType();
+            if (t.Name.Equals("String")) return DataName.ToString();
+            if (!t.Name.Equals("List`1"))
+                return "";
+            var list = (List<string>)DataName;
+            if (list.Count <= i) return "";
+            return list[i];
+        }
+
+        protected override void OnPreRender(EventArgs e)
+        {
+            if (NoScript)
+            {
+                this.Page.ClientScript.RegisterClientScriptResource(typeof(HighCharts), "HighchartsNET.js.jquery.min.js");
+                this.Page.ClientScript.RegisterClientScriptResource(typeof(HighCharts), "HighchartsNET.js.highcharts.js");
+            }
+            base.OnPreRender(e);
+        }
+
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
-            //writer.WriteLine();
             writer.Write("<!--此代码由HighchartsNET自动生成-->");
             writer.WriteLine();
         }
@@ -72,12 +156,13 @@ namespace HighchartsNET
         {
             StringBuilder innerhtml = new StringBuilder();
             if (string.IsNullOrEmpty(DivId))
-                DivId = this.ID; //DivId = "zerochart";
+                DivId = this.ID;
             writer.AddAttribute(HtmlTextWriterAttribute.Id, DivId);
             writer.AddAttribute(HtmlTextWriterAttribute.Style, Style.Value);
             writer.AddStyleAttribute(HtmlTextWriterStyle.Margin, "0px auto");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
             writer.RenderEndTag();
+            writer.WriteLine();
             writer.AddAttribute(HtmlTextWriterAttribute.Type, "text/javascript");
             writer.RenderBeginTag(HtmlTextWriterTag.Script);
             HighChartsJs(innerhtml);
@@ -94,6 +179,7 @@ namespace HighchartsNET
                 jscode.Append("title: { text: '" + Title + "'},");
             if (!string.IsNullOrEmpty(SubTitle))
                 jscode.Append("subtitle: { text: '" + SubTitle + "'},");
+            //判断类型及数据显示
             if (XAxis != null && Type != ChartType.Pie)
             {
                 XAxisToString(jscode, XAxis);
@@ -109,9 +195,15 @@ namespace HighchartsNET
             if (!string.IsNullOrEmpty(YAxis))
             {
                 if (YAxis.IndexOf("title") < 0)
+                {
                     jscode.Append("yAxis: { title:{ text:'" + YAxis + "'}},");
+                    if(string.IsNullOrEmpty(Tooltip))
+                        jscode.Append("tooltip: { valueSuffix:'" + YAxis + "' },");
+                }
                 else
+                {
                     jscode.Append("yAxis: {" + YAxis + "},");
+                }
             }
             if (!string.IsNullOrEmpty(Tooltip))
                 jscode.Append("tooltip: {" + Tooltip + "},");
@@ -125,13 +217,13 @@ namespace HighchartsNET
         public override void RenderEndTag(HtmlTextWriter writer)
         {
             writer.WriteLine();
-            writer.WriteLine("<!--end by zero-->");
+            writer.WriteLine("<!--end by LineZero-->");
         }
 
         private void SeriesToString(StringBuilder sb)
         {
             sb.Append("series: [");
-            string seriesdata = "";
+            string seriesdata = string.Empty;
             if (Series.SeriesData != null)
             {
                 seriesdata = SeriesDataToString(Series);
@@ -142,7 +234,7 @@ namespace HighchartsNET
                 {
                     seriesdata += SeriesDataToString(ser) + ",";
                 }
-                seriesdata = seriesdata.Substring(0, seriesdata.Length - 1);
+                seriesdata = seriesdata.TrimEnd(',');
             }
             sb.Append(seriesdata);
             sb.Append("]");
@@ -155,37 +247,38 @@ namespace HighchartsNET
         /// <returns></returns>
         private string SeriesDataToString(ChartsSeries series)
         {
-            string seriesdata = "";
-            seriesdata += "{ name: '" + series.SeriesName + "',data:[";
+            string seriesdata = "{ name: '" + series.SeriesName + "',data:[";
             foreach (var item in series.SeriesData)
             {
                 seriesdata += "['" + item.Key + "'," + item.Value + "],";
             }
-            seriesdata = seriesdata.Substring(0, seriesdata.Length - 1);
+            seriesdata = seriesdata.TrimEnd(',');
             seriesdata += "] }";
             return seriesdata;
         }
-
-        private void XAxisToString(StringBuilder sb, List<string> xAxis)
+        /// <summary>
+        /// x轴上数据转换
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="xAxis"></param>
+        private void XAxisToString(StringBuilder sb, List<object> xAxis)
         {
             sb.Append("xAxis: { categories: [");
-            int i = 0;
+            string xaxis = string.Empty;
             foreach (var item in xAxis)
             {
-                i++;
-                if (i == xAxis.Count)
-                    sb.Append("'" + item + "'");
-                else
-                    sb.Append("'" + item + "',");
+                xaxis += "'" + item + "',";
             }
+            xaxis = xaxis.TrimEnd(',');
+            sb.Append(xaxis);
             sb.Append("]},");
         }
     }
 
     public struct ChartsSeries
     {
-        public string SeriesName { get; set; }
-        public Dictionary<string, double> SeriesData { get; set; }
+        public object SeriesName { get; set; }
+        public Dictionary<object, object> SeriesData { get; set; }
     }
     public enum ChartType
     {
