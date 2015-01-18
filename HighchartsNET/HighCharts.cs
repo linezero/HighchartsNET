@@ -58,9 +58,38 @@ namespace HighchartsNET
         public string DivId { get; set; }
 
         /// <summary>
+        /// 图标下方标识是否显示 默认不显示
+        /// </summary>
+        public bool Legend { get; set; }
+
+        /// <summary>
         /// 高级功能，多个数据集，多条图表，饼图不需要。
         /// </summary>
         public List<ChartsSeries> SeriesList { get; set; }
+
+        public override Unit Width
+        {
+            get
+            {
+                return base.Width;
+            }
+            set
+            {
+                base.Width = value;
+            }
+        }
+
+        public override Unit Height
+        {
+            get
+            {                
+                return base.Height;
+            }
+            set
+            {
+                base.Height = value;
+            }
+        }
 
         private bool noscript = true;
         /// <summary>
@@ -159,6 +188,10 @@ namespace HighchartsNET
                 DivId = this.ID;
             writer.AddAttribute(HtmlTextWriterAttribute.Id, DivId);
             writer.AddAttribute(HtmlTextWriterAttribute.Style, Style.Value);
+            if (Width != Unit.Empty)
+                writer.AddStyleAttribute(HtmlTextWriterStyle.Width, Width.ToString());
+            if (Height != Unit.Empty)
+                writer.AddStyleAttribute(HtmlTextWriterStyle.Height, Height.ToString());
             writer.AddStyleAttribute(HtmlTextWriterStyle.Margin, "0px auto");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
             writer.RenderEndTag();
@@ -181,7 +214,7 @@ namespace HighchartsNET
                 jscode.Append("subtitle: { text: '" + SubTitle + "'},");
             //判断类型及数据显示
             if (XAxis != null && Type != ChartType.Pie)
-            {
+            {                
                 XAxisToString(jscode, XAxis);
             }
             else if (Series.SeriesData != null && Type != ChartType.Pie)
@@ -205,6 +238,7 @@ namespace HighchartsNET
                     jscode.Append("yAxis: {" + YAxis + "},");
                 }
             }
+            jscode.Append("legend: { enabled: "+Legend.ToString().ToLower()+" },");
             if (!string.IsNullOrEmpty(Tooltip))
                 jscode.Append("tooltip: {" + Tooltip + "},");
             if (!string.IsNullOrEmpty(PlotOptions))
@@ -262,7 +296,7 @@ namespace HighchartsNET
         /// <param name="sb"></param>
         /// <param name="xAxis"></param>
         private void XAxisToString(StringBuilder sb, List<object> xAxis)
-        {
+        {            
             sb.Append("xAxis: { categories: [");
             string xaxis = string.Empty;
             foreach (var item in xAxis)
