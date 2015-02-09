@@ -188,9 +188,9 @@ namespace HighchartsNET
                 DivId = this.ID;
             writer.AddAttribute(HtmlTextWriterAttribute.Id, DivId);
             writer.AddAttribute(HtmlTextWriterAttribute.Style, Style.Value);
-            if (Width != Unit.Empty)
+            if (!Width.IsEmpty)
                 writer.AddStyleAttribute(HtmlTextWriterStyle.Width, Width.ToString());
-            if (Height != Unit.Empty)
+            if (!Height.IsEmpty)
                 writer.AddStyleAttribute(HtmlTextWriterStyle.Height, Height.ToString());
             writer.AddStyleAttribute(HtmlTextWriterStyle.Margin, "0px auto");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
@@ -207,7 +207,12 @@ namespace HighchartsNET
         {
             jscode.Append("$(function(){$('#" + DivId + "').highcharts({ ");
             jscode.Append("credits: { enabled: false },");
-            jscode.Append("chart:{ type: '" + Type.ToString().ToLower() + "'},");
+            jscode.Append("chart:{ type: '" + Type.ToString().ToLower() + "'");
+            if (!Width.IsEmpty)
+                jscode.Append(",width:" + Width.Value);
+            if (!Height.IsEmpty)
+                jscode.Append(",height:" + Height.Value);
+            jscode.Append("},");
             if (!string.IsNullOrEmpty(Title))
                 jscode.Append("title: { text: '" + Title + "'},");
             if (!string.IsNullOrEmpty(SubTitle))
