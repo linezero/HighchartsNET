@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<div>
+    <high-charts id="demoline" title="ASP.NET Core 线图" subtitle="http://www.cnblogs.com/linezero" type="Line" series="ViewBag.Series"></high-charts>
+    <high-charts id="democolumn" title="ASP.NET Core柱图" subtitle="http://www.cnblogs.com/linezero" type="Column" series="ViewBag.Series"></high-charts>
+    <high-charts id="demopie" title="ASP.NET Core饼图" subtitle="http://www.cnblogs.com/linezero" type="Pie" series="ViewBag.Series"></high-charts>
+</div>
