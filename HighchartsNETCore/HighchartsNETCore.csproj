@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Highcharts ASP.NET Core http://www.cnblogs.com/linezero/</Description>
+    <Authors>LineZero</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>HighchartsNETCore</AssemblyName>
+    <PackageId>HighchartsNETCore</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

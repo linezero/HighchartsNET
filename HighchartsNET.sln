@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighchartsNET", "HighchartsNET\HighchartsNET.csproj", "{B6C01106-EB97-459F-9C76-7C21FAA612D8}"
 EndProject
@@ -27,9 +27,9 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Web", "Web\", "{224BA020-6A
 		SlnRelativePath = "Web\"
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HighchartsNETCore", "HighchartsNETCore\HighchartsNETCore.xproj", "{D5C9826A-BCF2-46B6-AA10-B7AB6571E24F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighchartsNETCore", "HighchartsNETCore\HighchartsNETCore.csproj", "{D5C9826A-BCF2-46B6-AA10-B7AB6571E24F}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HighchartsNETCoreWeb", "HighchartsNETCoreWeb\HighchartsNETCoreWeb.xproj", "{7FE9727A-03E9-4665-AF9C-5F025EF56C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighchartsNETCoreWeb", "HighchartsNETCoreWeb\HighchartsNETCoreWeb.csproj", "{7FE9727A-03E9-4665-AF9C-5F025EF56C4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,5 +56,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {809F83FB-2B7B-48E4-8162-A12FD127D8A4}
 	EndGlobalSection
 EndGlobal
